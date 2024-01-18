@@ -1,0 +1,29 @@
+{
+  "name": "topic-lake-client",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Valentin-Foucher/topic-lake-client.git"
+  },
+  "author": "Valentin <valentin.foucher@free.fr>",
+  "homepage": "https://github.com/Valentin-Foucher/topic-lake-client#readme",
+  "dependencies": {
+    "axios": "^1.6.5",
+    "next": "^14.0.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "openapi-typescript-codegen": "^0.27.0"
+  }
+}
