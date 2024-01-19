@@ -2,14 +2,13 @@
   "name": "topic-lake-client",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "client": "openapi --input http://0.0.0.0:8000/openapi.json --output ./src/clients/api --client axios --useOptions --useUnionTypes",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "client": "openapi --input http://0.0.0.0:8000/openapi.json --output ./src/clients/api --client axios --useOptions --useUnionTypes"
   },
   "repository": {
     "type": "git",
@@ -30,6 +29,8 @@
     "@types/node": "20.11.5",
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
+    "eslint": "8.56.0",
+    "eslint-config-next": "14.1.0",
     "openapi-typescript-codegen": "^0.27.0"
   }
 }
