@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type CreateUserRequest = {
-    name: string;
+    username: string;
     password: string;
 };
 

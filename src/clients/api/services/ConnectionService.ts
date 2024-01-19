@@ -13,14 +13,14 @@ export class ConnectionService {
      * @returns LogInResponse Successful Response
      * @throws ApiError
      */
-    public static loginLoginPost({
+    public static loginApiV1LoginPost({
         requestBody,
     }: {
         requestBody: LogInRequest,
     }): CancelablePromise<LogInResponse> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/login',
+            url: '/api/v1/login',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -33,10 +33,10 @@ export class ConnectionService {
      * @returns any Successful Response
      * @throws ApiError
      */
-    public static logoutLogoutPost(): CancelablePromise<any> {
+    public static logoutApiV1LogoutPost(): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/logout',
+            url: '/api/v1/logout',
         });
     }
 }

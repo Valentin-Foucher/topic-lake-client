@@ -14,14 +14,14 @@ export class ItemsService {
      * @returns ListItemsResponse Successful Response
      * @throws ApiError
      */
-    public static listItemsTopicsTopicIdItemsGet({
+    public static listItemsApiV1TopicsTopicIdItemsGet({
         topicId,
     }: {
         topicId: number,
     }): CancelablePromise<ListItemsResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/topics/{topic_id}/items',
+            url: '/api/v1/topics/{topic_id}/items',
             path: {
                 'topic_id': topicId,
             },
@@ -35,7 +35,7 @@ export class ItemsService {
      * @returns any Successful Response
      * @throws ApiError
      */
-    public static createItemTopicsTopicIdItemsPost({
+    public static createItemApiV1TopicsTopicIdItemsPost({
         topicId,
         requestBody,
     }: {
@@ -44,7 +44,7 @@ export class ItemsService {
     }): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/topics/{topic_id}/items',
+            url: '/api/v1/topics/{topic_id}/items',
             path: {
                 'topic_id': topicId,
             },
@@ -60,14 +60,14 @@ export class ItemsService {
      * @returns GetItemResponse Successful Response
      * @throws ApiError
      */
-    public static getItemTopicsTopicIdItemsItemIdGet({
+    public static getItemApiV1TopicsTopicIdItemsItemIdGet({
         itemId,
     }: {
         itemId: number,
     }): CancelablePromise<GetItemResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/topics/{topic_id}/items/{item_id}',
+            url: '/api/v1/topics/{topic_id}/items/{item_id}',
             path: {
                 'item_id': itemId,
             },
@@ -81,14 +81,14 @@ export class ItemsService {
      * @returns void
      * @throws ApiError
      */
-    public static deleteItemTopicsTopicIdItemsItemIdDelete({
+    public static deleteItemApiV1TopicsTopicIdItemsItemIdDelete({
         itemId,
     }: {
         itemId: number,
     }): CancelablePromise<void> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/topics/{topic_id}/items/{item_id}',
+            url: '/api/v1/topics/{topic_id}/items/{item_id}',
             path: {
                 'item_id': itemId,
             },

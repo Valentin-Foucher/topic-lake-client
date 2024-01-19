@@ -15,10 +15,10 @@ export class TopicsService {
      * @returns ListTopicsResponse Successful Response
      * @throws ApiError
      */
-    public static listTopicsTopicsGet(): CancelablePromise<ListTopicsResponse> {
+    public static listTopicsApiV1TopicsGet(): CancelablePromise<ListTopicsResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/topics',
+            url: '/api/v1/topics',
         });
     }
     /**
@@ -26,14 +26,14 @@ export class TopicsService {
      * @returns CreateTopicResponse Successful Response
      * @throws ApiError
      */
-    public static createTopicTopicsPost({
+    public static createTopicApiV1TopicsPost({
         requestBody,
     }: {
         requestBody: CreateTopicRequest,
     }): CancelablePromise<CreateTopicResponse> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/topics',
+            url: '/api/v1/topics',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -46,14 +46,14 @@ export class TopicsService {
      * @returns GetTopicResponse Successful Response
      * @throws ApiError
      */
-    public static getTopicTopicsTopicIdGet({
+    public static getTopicApiV1TopicsTopicIdGet({
         topicId,
     }: {
         topicId: number,
     }): CancelablePromise<GetTopicResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/topics/{topic_id}',
+            url: '/api/v1/topics/{topic_id}',
             path: {
                 'topic_id': topicId,
             },
@@ -67,14 +67,14 @@ export class TopicsService {
      * @returns void
      * @throws ApiError
      */
-    public static deleteTopicTopicsTopicIdDelete({
+    public static deleteTopicApiV1TopicsTopicIdDelete({
         topicId,
     }: {
         topicId: number,
     }): CancelablePromise<void> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/topics/{topic_id}',
+            url: '/api/v1/topics/{topic_id}',
             path: {
                 'topic_id': topicId,
             },

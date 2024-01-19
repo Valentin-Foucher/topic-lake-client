@@ -14,14 +14,14 @@ export class UsersService {
      * @returns CreateUserResponse Successful Response
      * @throws ApiError
      */
-    public static createUserUsersPost({
+    public static createUserApiV1UsersPost({
         requestBody,
     }: {
         requestBody: CreateUserRequest,
     }): CancelablePromise<CreateUserResponse> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/users',
+            url: '/api/v1/users',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -34,10 +34,10 @@ export class UsersService {
      * @returns GetUserResponse Successful Response
      * @throws ApiError
      */
-    public static getUserUsersSelfGet(): CancelablePromise<GetUserResponse> {
+    public static getUserApiV1UsersSelfGet(): CancelablePromise<GetUserResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/users/self',
+            url: '/api/v1/users/self',
         });
     }
 }
