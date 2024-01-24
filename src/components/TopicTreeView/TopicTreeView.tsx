@@ -1,17 +1,22 @@
-import { Topic, TopicsService } from '@/clients/api';
+import { ApiError, ConnectionService, Topic, TopicsService } from '@/clients/api';
 import { CSSProperties, use, useEffect, useRef, useState } from 'react';
 import { NodeApi, Tree, TreeApi } from 'react-arborist';
 import { AiTwotonePlusSquare } from "react-icons/ai";
 import { MdArrowDropDown, MdArrowRight, MdEdit } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
+import { useAppDispatch } from '@/app/hooks';
+import { bearerTokenSlice } from '@/app/store';
+import { title } from '@/app/strings';
 import './TopicTreeView.css'
 
+const DEFAULT_TOPIC_NAME = 'new topic'
 
-
+const { logout } = bearerTokenSlice.actions;
 
 export default function TopicTreeView() {
     const [topicsTree, setTopicsTree] = useState<Topic[]>();
     const [createdTopicId, setCreatedTopicId] = useState<number | null>()
+    const dispatch = useAppDispatch();
     const treeRef = useRef<TreeApi<Topic>>(null);
 
     useEffect(() => {
@@ -36,6 +41,11 @@ export default function TopicTreeView() {
     const updateTopicsTree = () => {
         TopicsService.listTopicsApiV1TopicsGet()
         .then(response => setTopicsTree(response.topics))
+        .catch((err: ApiError) => {
+            if (err.status === 401) {
+                ConnectionService.logoutApiV1LogoutPost().then(_ => dispatch(logout()))
+            }
+        })
     }
 
     const createTopic = () => {
@@ -44,22 +54,36 @@ export default function TopicTreeView() {
         }
 
         const parentTopicId = treeRef.current.selectedNodes[0] ? treeRef.current.selectedNodes[0].data.id : null
+        let futureName = DEFAULT_TOPIC_NAME
+        let defaultNameUsage = 0
         if (parentTopicId) {
             const parentNode = getNodeById(parentTopicId)
             parentNode?.openParents()
             parentNode?.open()
+            parentNode?.children?.forEach(element => {
+                if (element.data.content.match(new RegExp(`${DEFAULT_TOPIC_NAME}(\s\(%d\))?`))) {
+                    defaultNameUsage += 1
+                }
+            })
+        }
+        if (defaultNameUsage > 0) {
+            futureName += ` (${defaultNameUsage})`
         }
 
         TopicsService.createTopicApiV1TopicsPost(
             {
                 requestBody: {
-                    content: Math.random().toString(24).substring(2, 10),
+                    content: futureName,
                     parent_topic_id: parentTopicId
                 }
             }
         ).then((response) => {
             updateTopicsTree()
             setCreatedTopicId(response.id)
+        }).catch((err: ApiError) => {
+            if (err.status === 401) {
+                ConnectionService.logoutApiV1LogoutPost().then(_ => dispatch(logout()))
+            }
         })
     }
 
@@ -78,6 +102,8 @@ export default function TopicTreeView() {
                     <input
                         type="text"
                         autoFocus
+                        minLength={4}
+                        maxLength={256}
                         onFocus={(e) => e.currentTarget.select()}
                         onBlur={() => node.reset()}
                         onKeyDown={(e) => {
@@ -85,6 +111,10 @@ export default function TopicTreeView() {
                                 node.reset()
                             }
                             else if (e.key === "Enter") {
+                                if (e.currentTarget.value.length < 4 || e.currentTarget.value.length > 256) {
+                                    node.reset()
+                                    return
+                                }
                                 TopicsService.updateTopicApiV1TopicsTopicIdPut({
                                     topicId: node.data.id,
                                     requestBody: {
@@ -94,12 +124,18 @@ export default function TopicTreeView() {
                                 }).then(() => {
                                     updateTopicsTree()
                                     node.reset()
+                                }).catch((err: ApiError) => {
+                                    if (err.status === 401) {
+                                        ConnectionService.logoutApiV1LogoutPost().then(_ => dispatch(logout()))
+                                    }
                                 })
                             }
                         }}
                     />
                 ) : (
-                    <span>{node.data.content}</span>
+                    <pre>
+                        {title(node.data.content)}
+                    </pre>
                 )}
                 <div className="actions">
                     <button onClick={() => node.edit()} title="Rename...">

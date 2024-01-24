@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "client": "openapi --input http://0.0.0.0:8000/openapi.json --output ./src/clients/api --client axios --useOptions --useUnionTypes"
+    "client": "openapi --input http://0.0.0.0:8000/openapi.json --output ./src/clients/api --client axios --useOptions --useUnionTypes --request ./src/clients/ApiCustomRequest.template"
   },
   "repository": {
     "type": "git",
