@@ -2,6 +2,7 @@ import { makeStore } from '@/app/store';
 import { OpenAPI } from '@/clients/api';
 import type { AppProps } from 'next/app'
 import { Provider } from 'react-redux';
+import './theme.css'
 
 export default function App({ Component, pageProps }: AppProps) {
     const store = makeStore();

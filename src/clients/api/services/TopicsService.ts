@@ -6,6 +6,7 @@ import type { CreateTopicRequest } from '../models/CreateTopicRequest';
 import type { CreateTopicResponse } from '../models/CreateTopicResponse';
 import type { GetTopicResponse } from '../models/GetTopicResponse';
 import type { ListTopicsResponse } from '../models/ListTopicsResponse';
+import type { UpdateTopicRequest } from '../models/UpdateTopicRequest';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -78,6 +79,31 @@ export class TopicsService {
             path: {
                 'topic_id': topicId,
             },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Update Topic
+     * @returns void
+     * @throws ApiError
+     */
+    public static updateTopicApiV1TopicsTopicIdPut({
+        topicId,
+        requestBody,
+    }: {
+        topicId: number,
+        requestBody: UpdateTopicRequest,
+    }): CancelablePromise<void> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/topics/{topic_id}',
+            path: {
+                'topic_id': topicId,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
             errors: {
                 422: `Validation Error`,
             },

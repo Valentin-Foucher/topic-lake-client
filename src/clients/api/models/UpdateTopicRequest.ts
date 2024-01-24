@@ -2,8 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type CreateItemRequest = {
+export type UpdateTopicRequest = {
     content: string;
-    rank?: number;
+    parent_topic_id: (number | null);
 };
 

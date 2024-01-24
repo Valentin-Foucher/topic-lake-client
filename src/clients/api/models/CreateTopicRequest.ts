@@ -4,7 +4,6 @@
 /* eslint-disable */
 export type CreateTopicRequest = {
     content: string;
-    user_id: number;
     parent_topic_id?: (number | null);
 };
 

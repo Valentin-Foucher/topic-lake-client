@@ -1,4 +1,4 @@
-import { useAppDispatch } from '../app/hooks'
+import { useAppDispatch } from '@/app/hooks'
 import { ConnectionService } from '@/clients/api';
 import UserPassword from './UserPassword';
 import { parseApiError } from '@/app/errors';

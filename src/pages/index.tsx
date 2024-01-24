@@ -2,6 +2,7 @@ import Login from '@/components/Login';
 import { useAppSelector } from '../app/hooks'
 import CreateUser from '@/components/CreateUser';
 import Logout from '@/components/Logout';
+import TopicTreeView from '@/components/TopicTreeView/TopicTreeView';
 
 
 export default function Home() {
@@ -18,6 +19,7 @@ export default function Home() {
     return (
         <div className='container'>
             <Logout />
+            <TopicTreeView />
         </div>
     );
 }

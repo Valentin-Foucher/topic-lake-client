@@ -1,0 +1,42 @@
+.node-container {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    width: 100%;
+    background-color: var(--main-bg-color);
+    transition: background-color 0.3s ease;
+}
+
+.node-container.is-selected {
+    background-color: var(--secondary-bg-color);
+}
+
+.node-container:hover {
+    background-color: var(--third-bg-color);
+}
+
+
+.actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.actions button {
+    display: flex;
+    align-items: center;
+    color: #999999;
+    background-color: inherit;
+    border: none;
+    font-size: 16px;
+    height: 100%;
+    width: 24px;
+}
+
+.node-container .actions {
+    visibility: hidden;
+}
+.node-container:hover .actions {
+    visibility: visible;
+}
