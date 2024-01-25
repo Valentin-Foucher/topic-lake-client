@@ -58,24 +58,22 @@ export default function TopicTreeView({ user }: { user: User | undefined }) {
         let futureName = DEFAULT_TOPIC_NAME
         let automaticNameExtension = 0
 
-        if (parentTopicId) {
-            const parentNode = getNodeById(parentTopicId)
-            parentNode?.openParents()
-            parentNode?.open()
+        const parentNode = parentTopicId ? getNodeById(parentTopicId) : treeRef.current.root
+        parentNode?.openParents()
+        parentNode?.open()
 
-            const availableAliases = new Array((parentNode?.children?.length ?? 0) + 1).fill(true)
-            parentNode?.children?.forEach(element => {
-                const match = element.data.content.match(new RegExp(`^${DEFAULT_TOPIC_NAME}(\\s\\((?<count>\\d+)\\))?`))
-                if (match) {
-                    const index = match?.groups?.count ? parseInt(match?.groups.count) : 0
-                    availableAliases[index] = false
-                }
-            })
-            for (let i = 0; i < availableAliases.length; i++) {
-                if (availableAliases[i]) {
-                    automaticNameExtension = i
-                    break
-                }
+        const availableAliases = new Array((parentNode?.children?.length ?? 0) + 1).fill(true)
+        parentNode?.children?.forEach(element => {
+            const match = element.data.content.match(new RegExp(`^${DEFAULT_TOPIC_NAME}(\\s\\((?<count>\\d+)\\))?`))
+            if (match) {
+                const index = match?.groups?.count ? parseInt(match?.groups.count) : 0
+                availableAliases[index] = false
+            }
+        })
+        for (let i = 0; i < availableAliases.length; i++) {
+            if (availableAliases[i]) {
+                automaticNameExtension = i
+                break
             }
         }
 
