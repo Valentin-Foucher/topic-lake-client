@@ -22,6 +22,7 @@ export type { ListTopicsResponse } from './models/ListTopicsResponse';
 export type { LogInRequest } from './models/LogInRequest';
 export type { LogInResponse } from './models/LogInResponse';
 export type { Topic } from './models/Topic';
+export type { UpdateItemRequest } from './models/UpdateItemRequest';
 export type { UpdateTopicRequest } from './models/UpdateTopicRequest';
 export type { User } from './models/User';
 export type { ValidationError } from './models/ValidationError';

@@ -5,6 +5,7 @@
 import type { CreateItemRequest } from '../models/CreateItemRequest';
 import type { GetItemResponse } from '../models/GetItemResponse';
 import type { ListItemsResponse } from '../models/ListItemsResponse';
+import type { UpdateItemRequest } from '../models/UpdateItemRequest';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -92,6 +93,31 @@ export class ItemsService {
             path: {
                 'item_id': itemId,
             },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+    /**
+     * Update Item
+     * @returns void
+     * @throws ApiError
+     */
+    public static updateItemApiV1TopicsTopicIdItemsItemIdPut({
+        itemId,
+        requestBody,
+    }: {
+        itemId: number,
+        requestBody: UpdateItemRequest,
+    }): CancelablePromise<void> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/topics/{topic_id}/items/{item_id}',
+            path: {
+                'item_id': itemId,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
             errors: {
                 422: `Validation Error`,
             },
