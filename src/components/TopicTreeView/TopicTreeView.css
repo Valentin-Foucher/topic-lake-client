@@ -21,6 +21,7 @@
     flex-direction: row;
     align-items: center;
     margin-right: 10px;
+    margin-left: 10px;
 }
 
 .actions button {
@@ -31,7 +32,7 @@
     border: none;
     font-size: 16px;
     height: 100%;
-    width: 24px;
+    width: 30px;
 }
 
 .node-container .actions {

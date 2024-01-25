@@ -16,6 +16,7 @@ const { logout } = bearerTokenSlice.actions;
 export default function TopicTreeView() {
     const [topicsTree, setTopicsTree] = useState<Topic[]>();
     const [createdTopicId, setCreatedTopicId] = useState<number | null>()
+    const [error, setError] = useState<string | null>()
     const dispatch = useAppDispatch();
     const treeRef = useRef<TreeApi<Topic>>(null);
 
@@ -153,7 +154,7 @@ export default function TopicTreeView() {
 
     return (
         <>
-            <div className="create-topic">
+            <div className="actions">
                 <button onClick={createTopic} title="New Topic...">
                     <AiTwotonePlusSquare />
                 </button>
@@ -194,6 +195,9 @@ export default function TopicTreeView() {
             >
                 {Node}
             </Tree>
+            <div className="error">
+                {error}
+            </div>
         </>
     );
 }
