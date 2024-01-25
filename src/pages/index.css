@@ -1,0 +1,18 @@
+.container {
+    display: flex;
+    flex-direction: row;
+}
+
+.left-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: left;
+    width: 40%;
+}
+
+div[role=tree] {
+    width: 5px;
+    height: 8px;
+    background: orange;
+}

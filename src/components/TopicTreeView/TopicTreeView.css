@@ -41,3 +41,13 @@
 .node-container:hover .actions {
     visibility: visible;
 }
+
+.create-topic {
+    margin-bottom: 20px;
+}
+.create-topic button {
+    width: auto;
+}
+.create-topic button:hover {
+    transform: scale(1.1);
+}

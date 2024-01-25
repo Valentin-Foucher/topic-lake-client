@@ -24,7 +24,12 @@ export default function UserPassword({ onClick, buttonText, error }: { onClick: 
                     onChange={(e) => setPassword(e.target.value)}
                 />
             </div>
-            <button onClick={() => onClick(username, password)}>{buttonText}</button>
+            <button
+                className='log-buttons'
+                onClick={() => onClick(username, password)}
+            >
+                {buttonText}
+            </button>
             <div className="error">
                 {error}
             </div>

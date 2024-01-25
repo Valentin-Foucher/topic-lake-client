@@ -153,10 +153,10 @@ export default function TopicTreeView() {
     }
 
     return (
-        <>
-            <div className="actions">
+        <div>
+            <div className="actions create-topic">
                 <button onClick={createTopic} title="New Topic...">
-                    <AiTwotonePlusSquare />
+                    <AiTwotonePlusSquare size={25} />
                 </button>
             </div>
             <Tree
@@ -164,8 +164,6 @@ export default function TopicTreeView() {
                 ref={treeRef}
                 disableMultiSelection={true}
                 selectionFollowsFocus={true}
-                width={600}
-                height={1000}
                 indent={12}
                 rowHeight={20}
                 paddingBottom={50}
@@ -198,6 +196,6 @@ export default function TopicTreeView() {
             <div className="error">
                 {error}
             </div>
-        </>
+        </div>
     );
 }

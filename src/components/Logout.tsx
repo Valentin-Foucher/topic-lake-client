@@ -11,8 +11,9 @@ export default function Logout() {
     const dispatch = useAppDispatch();
 
     return (
-        <>
+        <div>
             <button
+                className='log-buttons'
                 onClick={() => {
                     ConnectionService.logoutApiV1LogoutPost()
                         .then(_ => dispatch(logout()))
@@ -21,11 +22,11 @@ export default function Logout() {
                         })
                 }}
             >
-                    Sign out
+                Sign out
             </button>
             <div className="error">
                 {error}
             </div>
-        </>
+        </div>
     );
 }
