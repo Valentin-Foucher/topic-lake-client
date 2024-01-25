@@ -19,7 +19,7 @@ export default function CreateUser() {
                     UsersService.createUserApiV1UsersPost({ requestBody: { username, password }})
                         .then(_ => {
                             ConnectionService.loginApiV1LoginPost({ requestBody: { username, password }})
-                                .then(response => dispatch(login(response.token)))
+                                .then(response => dispatch(login(response)))
                         }).catch(e => {
                             setError(parseApiError(e))
                         })

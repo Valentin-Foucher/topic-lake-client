@@ -56,7 +56,7 @@ export default function TopicTreeView({ user }: { user: User | undefined }) {
 
         const parentTopicId = treeRef.current.selectedNodes[0] ? treeRef.current.selectedNodes[0].data.id : null
         let futureName = DEFAULT_TOPIC_NAME
-        let defaultNameUsage = 0
+        let automaticNameExtension = 0
 
         if (parentTopicId) {
             const parentNode = getNodeById(parentTopicId)
@@ -73,14 +73,14 @@ export default function TopicTreeView({ user }: { user: User | undefined }) {
             })
             for (let i = 0; i < availableAliases.length; i++) {
                 if (availableAliases[i]) {
-                    defaultNameUsage = i
+                    automaticNameExtension = i
                     break
                 }
             }
         }
 
-        if (defaultNameUsage > 0) {
-            futureName += ` (${defaultNameUsage})`
+        if (automaticNameExtension > 0) {
+            futureName += ` (${automaticNameExtension})`
         }
 
         TopicsService.createTopicApiV1TopicsPost(
