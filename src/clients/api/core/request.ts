@@ -6,7 +6,7 @@ import axios from 'axios';
 import type { AxiosError, AxiosRequestConfig, AxiosResponse, AxiosInstance } from 'axios';
 import FormData from 'form-data';
 
-import { bearerTokenSlice, makeStore } from '@/app/store';
+import { bearerTokenSlice, makeStore, store } from '@/app/store';
 import { OpenAPIConfig } from './OpenAPI';
 import { ApiRequestOptions } from './ApiRequestOptions';
 import { ApiResult } from './ApiResult';
@@ -276,7 +276,7 @@ export const catchErrorCodes = (options: ApiRequestOptions, result: ApiResult): 
             }
         })();
         if (errorStatus === 401) {
-            makeStore().dispatch(bearerTokenSlice.actions.logout())
+            store.dispatch(bearerTokenSlice.actions.logout())
         }
         throw new ApiError(options, result,
             `Generic Error: status: ${errorStatus}; status text: ${errorStatusText}; body: ${errorBody}`

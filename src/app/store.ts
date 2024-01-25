@@ -1,5 +1,11 @@
-import { OpenAPI } from '@/clients/api'
-import { PayloadAction, configureStore, createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, Reducer, combineReducers, configureStore, createSlice } from '@reduxjs/toolkit'
+import { persistReducer, persistStore, FLUSH,
+    REHYDRATE,
+    PAUSE,
+    PERSIST,
+    PURGE,
+    REGISTER } from "redux-persist";
+import storage from 'redux-persist/lib/storage';
 
 export const bearerTokenSlice = createSlice({
     name: 'bearerToken',
@@ -9,22 +15,33 @@ export const bearerTokenSlice = createSlice({
     reducers: {
         login(state, token: PayloadAction<string>) {
             state.value = token.payload;
-            (OpenAPI.HEADERS as Record<string, string>)['Authorization'] = `Bearer ${token.payload}`;
         },
         logout(state) {
             state.value = null;
-            delete (OpenAPI.HEADERS as Record<string, string>)['Authorization'];
         }
     }
   })
 
-export const makeStore = () => {
-    return configureStore({
-        reducer: {
-            bearerToken: bearerTokenSlice.reducer
+export const makeStore = (reducer: Reducer) => {
+    return configureStore({ reducer: reducer })
+}
+const persistConfig = {
+    key: 'root',
+    storage,
+}
+
+const persistedReducer = persistReducer(persistConfig, combineReducers({ bearerToken: bearerTokenSlice.reducer }))
+
+export const store = configureStore({
+    reducer: persistedReducer,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+        serializableCheck: {
+            ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
         }
     })
-}
+})
+export const persistor = persistStore(store)
+
 
 export type AppStore = ReturnType<typeof makeStore>
 export type RootState = ReturnType<AppStore['getState']>
