@@ -4,7 +4,7 @@ import { NodeApi, Tree, TreeApi } from 'react-arborist';
 import { AiTwotonePlusSquare } from "react-icons/ai";
 import { MdArrowDropDown, MdArrowRight, MdEdit } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
-import { useAppDispatch } from '@/app/hooks';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { bearerTokenSlice } from '@/app/store';
 import { title } from '@/app/strings';
 import './TopicTreeView.css'
@@ -13,13 +13,14 @@ const DEFAULT_TOPIC_NAME = 'new topic'
 
 const { logout } = bearerTokenSlice.actions;
 
-export default function TopicTreeView() {
+export default function TopicTreeView({ userId }: { userId: number }) {
     const [topicsTree, setTopicsTree] = useState<Topic[]>();
     const [createdTopicId, setCreatedTopicId] = useState<number | null>()
     const [error, setError] = useState<string | null>()
     const dispatch = useAppDispatch();
     const treeRef = useRef<TreeApi<Topic>>(null);
-
+    
+    console.log(userId)
     useEffect(() => {
         updateTopicsTree()
     }, []);
@@ -139,6 +140,7 @@ export default function TopicTreeView() {
                         {title(node.data.content)}
                     </pre>
                 )}
+                {node.data.user_id === userId &&
                 <div className="actions">
                     <button onClick={() => node.edit()} title="Rename...">
                         <MdEdit />
@@ -147,7 +149,9 @@ export default function TopicTreeView() {
                                             .then(() => updateTopicsTree())} title="Delete">
                         <RxCross2 />
                     </button>
+
                 </div>
+                }
             </div>
         );
     }
@@ -167,6 +171,7 @@ export default function TopicTreeView() {
                 indent={12}
                 rowHeight={20}
                 paddingBottom={50}
+                width={300}
                 idAccessor={(t: Topic) => t.id.toString()}
                 childrenAccessor={(t: Topic) => t.sub_topics ?? []}
                 onMove={({ dragIds, parentId, index }) => {

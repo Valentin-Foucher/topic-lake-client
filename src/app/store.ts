@@ -1,3 +1,4 @@
+import { LogInResponse } from '@/clients/api';
 import { PayloadAction, Reducer, combineReducers, configureStore, createSlice } from '@reduxjs/toolkit'
 import { persistReducer, persistStore, FLUSH,
     REHYDRATE,
@@ -10,10 +11,10 @@ import storage from 'redux-persist/lib/storage';
 export const bearerTokenSlice = createSlice({
     name: 'bearerToken',
     initialState: {
-      value: null as string | null
+      value: null as LogInResponse | null
     },
     reducers: {
-        login(state, token: PayloadAction<string>) {
+        login(state, token: PayloadAction<LogInResponse>) {
             state.value = token.payload;
         },
         logout(state) {

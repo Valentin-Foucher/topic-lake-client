@@ -18,7 +18,7 @@ export default function Login() {
                 onClick={(username: string, password: string) => {
                     ConnectionService.loginApiV1LoginPost({ requestBody: { username, password }})
                         .then(response => {
-                            dispatch(login(response.token))
+                            dispatch(login(response))
                         }).catch(e => {
                             setError(parseApiError(e))
                         })
