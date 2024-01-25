@@ -10,9 +10,3 @@
     align-items: left;
     width: 40%;
 }
-
-div[role=tree] {
-    width: 5px;
-    height: 8px;
-    background: orange;
-}

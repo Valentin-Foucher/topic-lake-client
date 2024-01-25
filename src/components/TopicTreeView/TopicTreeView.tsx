@@ -1,4 +1,4 @@
-import { ApiError, ConnectionService, Topic, TopicsService } from '@/clients/api';
+import { ApiError, ConnectionService, Topic, TopicsService, User } from '@/clients/api';
 import { CSSProperties, use, useEffect, useRef, useState } from 'react';
 import { NodeApi, Tree, TreeApi } from 'react-arborist';
 import { AiTwotonePlusSquare } from "react-icons/ai";
@@ -13,14 +13,13 @@ const DEFAULT_TOPIC_NAME = 'new topic'
 
 const { logout } = bearerTokenSlice.actions;
 
-export default function TopicTreeView({ userId }: { userId: number }) {
+export default function TopicTreeView({ user }: { user: User | undefined }) {
     const [topicsTree, setTopicsTree] = useState<Topic[]>();
     const [createdTopicId, setCreatedTopicId] = useState<number | null>()
     const [error, setError] = useState<string | null>()
     const dispatch = useAppDispatch();
     const treeRef = useRef<TreeApi<Topic>>(null);
-    
-    console.log(userId)
+
     useEffect(() => {
         updateTopicsTree()
     }, []);
@@ -63,12 +62,23 @@ export default function TopicTreeView({ userId }: { userId: number }) {
             const parentNode = getNodeById(parentTopicId)
             parentNode?.openParents()
             parentNode?.open()
+
+            const availableAliases = new Array((parentNode?.children?.length ?? 0) + 1).fill(true)
             parentNode?.children?.forEach(element => {
-                if (element.data.content.match(new RegExp(`${DEFAULT_TOPIC_NAME}(\s\(%d\))?`))) {
-                    defaultNameUsage += 1
+                const match = element.data.content.match(new RegExp(`^${DEFAULT_TOPIC_NAME}(\\s\\((?<count>\\d+)\\))?`))
+                if (match) {
+                    const index = match?.groups?.count ? parseInt(match?.groups.count) : 0
+                    availableAliases[index] = false
                 }
             })
+            for (let i = 0; i < availableAliases.length; i++) {
+                if (availableAliases[i]) {
+                    defaultNameUsage = i
+                    break
+                }
+            }
         }
+
         if (defaultNameUsage > 0) {
             futureName += ` (${defaultNameUsage})`
         }
@@ -140,7 +150,7 @@ export default function TopicTreeView({ userId }: { userId: number }) {
                         {title(node.data.content)}
                     </pre>
                 )}
-                {node.data.user_id === userId &&
+                {(node.data.user_id === user?.id || user?.admin) &&
                 <div className="actions">
                     <button onClick={() => node.edit()} title="Rename...">
                         <MdEdit />
