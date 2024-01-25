@@ -56,6 +56,7 @@ export default function TopicTreeView() {
         const parentTopicId = treeRef.current.selectedNodes[0] ? treeRef.current.selectedNodes[0].data.id : null
         let futureName = DEFAULT_TOPIC_NAME
         let defaultNameUsage = 0
+
         if (parentTopicId) {
             const parentNode = getNodeById(parentTopicId)
             parentNode?.openParents()
@@ -169,6 +170,27 @@ export default function TopicTreeView() {
                 paddingBottom={50}
                 idAccessor={(t: Topic) => t.id.toString()}
                 childrenAccessor={(t: Topic) => t.sub_topics ?? []}
+                onMove={({ dragIds, parentId, index }) => {
+                    const id = parseInt(dragIds[0])
+                    const node = getNodeById(id)
+                    const parsedParentId = parentId ? parseInt(parentId) : null
+                    if (!node) {
+                        return
+                    }
+                    TopicsService.updateTopicApiV1TopicsTopicIdPut({
+                        topicId: id,
+                        requestBody: {
+                            content: node.data.content,
+                            parent_topic_id: parsedParentId
+                        }
+                    }).then(() => {
+                        updateTopicsTree()
+                    }).catch((err: ApiError) => {
+                        if (err.status === 401) {
+                            ConnectionService.logoutApiV1LogoutPost().then(_ => dispatch(logout()))
+                        }
+                    })
+                }}
             >
                 {Node}
             </Tree>
