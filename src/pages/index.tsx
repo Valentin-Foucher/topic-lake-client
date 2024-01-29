@@ -1,6 +1,6 @@
 import Login from '@/components/Login/Login';
 import { useAppDispatch, useAppSelector } from '../app/hooks'
-import CreateUser from '@/components/CreateUser';
+import CreateUser from '@/components/CreateUser/CreateUser';
 import Logout from '@/components/Logout/Logout';
 import TopicTreeView from '@/components/TopicTreeView/TopicTreeView';
 import { ApiError, ConnectionService, OpenAPI, Topic, User, UsersService } from '@/clients/api';

@@ -1,7 +1,7 @@
 import { useAppDispatch } from '@/app/hooks'
 import { ConnectionService, UsersService } from '@/clients/api';
 import { parseApiError } from '@/app/errors';
-import UserPassword from './UserPassword';
+import UserPassword from './UserPassword/UserPassword';
 import { useState } from 'react';
 import { bearerTokenSlice } from '@/app/store';
 
