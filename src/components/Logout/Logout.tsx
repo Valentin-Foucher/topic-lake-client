@@ -15,7 +15,7 @@ export default function Logout() {
         <>
             <div className='log-out'>
                 <button
-                    className='log-buttons'
+                    className='action-button'
                     onClick={() => {
                         ConnectionService.logoutApiV1LogoutPost()
                             .then(_ => dispatch(logout()))

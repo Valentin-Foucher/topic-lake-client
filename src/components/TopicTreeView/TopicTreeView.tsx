@@ -1,10 +1,10 @@
 import { ApiError, ConnectionService, Topic, TopicsService, User } from '@/clients/api';
-import { CSSProperties, use, useEffect, useRef, useState } from 'react';
+import { CSSProperties, useEffect, useRef, useState } from 'react';
 import { NodeApi, Tree, TreeApi } from 'react-arborist';
 import { AiTwotonePlusSquare } from "react-icons/ai";
 import { MdArrowDropDown, MdArrowRight, MdEdit } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
-import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { useAppDispatch } from '@/app/hooks';
 import { bearerTokenSlice } from '@/app/store';
 import { title } from '@/app/strings';
 import './TopicTreeView.css'
@@ -13,7 +13,7 @@ const DEFAULT_TOPIC_NAME = 'new topic'
 
 const { logout } = bearerTokenSlice.actions;
 
-export default function TopicTreeView({ user }: { user: User | undefined }) {
+export default function TopicTreeView({ user, selectedTopic, selectTopic }: { user: User | undefined, selectedTopic: Topic | undefined, selectTopic: (node: Topic) => void }) {
     const [topicsTree, setTopicsTree] = useState<Topic[]>();
     const [createdTopicId, setCreatedTopicId] = useState<number | null>()
     const [error, setError] = useState<string | null>()
@@ -23,6 +23,12 @@ export default function TopicTreeView({ user }: { user: User | undefined }) {
     useEffect(() => {
         updateTopicsTree()
     }, []);
+
+    useEffect(() => {
+        if (selectedTopic) {
+            onSelect(selectedTopic)
+        }
+    }, [selectedTopic])
 
     useEffect(() => {
         if (!createdTopicId) {
@@ -47,6 +53,37 @@ export default function TopicTreeView({ user }: { user: User | undefined }) {
                 ConnectionService.logoutApiV1LogoutPost().then(_ => dispatch(logout()))
             }
         })
+    }
+
+    const onMove = ({ dragIds, parentId, index }: { dragIds: string[], parentId: string | null, index: number}) => {
+        const id = parseInt(dragIds[0])
+        const node = getNodeById(id)
+        const parsedParentId = parentId ? parseInt(parentId) : null
+        if (!node) {
+            return
+        }
+        TopicsService.updateTopicApiV1TopicsTopicIdPut({
+            topicId: id,
+            requestBody: {
+                content: node.data.content,
+                parent_topic_id: parsedParentId
+            }
+        }).then(() => {
+            updateTopicsTree()
+        }).catch((err: ApiError) => {
+            if (err.status === 401) {
+                ConnectionService.logoutApiV1LogoutPost().then(_ => dispatch(logout()))
+            }
+        })
+    }
+
+    const onSelect = (topic: Topic | null) => {
+        if (topic) {
+            const node = getNodeById(topic.id)
+            console.log(node)
+            node?.open()
+            selectTopic(topic)
+        }
     }
 
     const createTopic = () => {
@@ -104,9 +141,10 @@ export default function TopicTreeView({ user }: { user: User | undefined }) {
                 style={style}
                 ref={dragHandle}
                 className={`node-container ${node.state.isSelected ? "is-selected" : ""}`}
-                onClick={() => node.isInternal && node.toggle()}
             >
-                <span>
+                <span
+                    onClick={() => node.isInternal && node.toggle()}
+                >
                     {node.isOpen ? <MdArrowDropDown /> : <MdArrowRight />}
                 </span>
                 {node.isEditing ? (
@@ -144,7 +182,7 @@ export default function TopicTreeView({ user }: { user: User | undefined }) {
                         }}
                     />
                 ) : (
-                    <pre>
+                    <pre onClick={() => onSelect(node.data)}>
                         {title(node.data.content)}
                     </pre>
                 )}
@@ -182,27 +220,7 @@ export default function TopicTreeView({ user }: { user: User | undefined }) {
                 width={300}
                 idAccessor={(t: Topic) => t.id.toString()}
                 childrenAccessor={(t: Topic) => t.sub_topics ?? []}
-                onMove={({ dragIds, parentId, index }) => {
-                    const id = parseInt(dragIds[0])
-                    const node = getNodeById(id)
-                    const parsedParentId = parentId ? parseInt(parentId) : null
-                    if (!node) {
-                        return
-                    }
-                    TopicsService.updateTopicApiV1TopicsTopicIdPut({
-                        topicId: id,
-                        requestBody: {
-                            content: node.data.content,
-                            parent_topic_id: parsedParentId
-                        }
-                    }).then(() => {
-                        updateTopicsTree()
-                    }).catch((err: ApiError) => {
-                        if (err.status === 401) {
-                            ConnectionService.logoutApiV1LogoutPost().then(_ => dispatch(logout()))
-                        }
-                    })
-                }}
+                onMove={onMove}
             >
                 {Node}
             </Tree>

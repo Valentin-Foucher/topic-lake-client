@@ -1,0 +1,10 @@
+.sub-topic {
+    max-width: 50%;
+    word-break: break-word;
+    margin-bottom: 15px;
+}
+
+.sub-topics-list {
+    align-items: center;
+    justify-content: space-around;
+}

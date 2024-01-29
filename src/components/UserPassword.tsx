@@ -25,7 +25,7 @@ export default function UserPassword({ onClick, buttonText, error }: { onClick: 
                 />
             </div>
             <button
-                className='log-buttons'
+                className='action-button'
                 onClick={() => onClick(username, password)}
             >
                 {buttonText}

@@ -3,16 +3,17 @@ import { useAppSelector } from '../app/hooks'
 import CreateUser from '@/components/CreateUser';
 import Logout from '@/components/Logout/Logout';
 import TopicTreeView from '@/components/TopicTreeView/TopicTreeView';
-import { OpenAPI, User, UsersService } from '@/clients/api';
+import { OpenAPI, Topic, User, UsersService } from '@/clients/api';
 import './index.css'
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
+import Board from '@/components/Board/Board';
 
 
 export default function Home() {
     const [user, setUser] = useState<User>();
+    const [selectedTopic, setSelectedTopic] = useState<Topic>()
 
     const token = useAppSelector(state => state.bearerToken.value?.token)
-    const userId = useAppSelector(state => state.bearerToken.value?.user_id)
 
     useEffect(() => {
         if (token) {
@@ -41,11 +42,18 @@ export default function Home() {
     return (
         <div className='container'>
             <div className='left-menu'>
-                <TopicTreeView user={user} />
+                <TopicTreeView
+                    user={user}
+                    selectedTopic={selectedTopic}
+                    selectTopic={setSelectedTopic}
+                />
                 <Logout />
             </div>
             <div className='board'>
-
+                <Board
+                    topic={selectedTopic}
+                    selectTopic={setSelectedTopic}
+                />
             </div>
         </div>
     );

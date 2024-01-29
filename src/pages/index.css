@@ -9,3 +9,9 @@
     gap: 20px;
     width: 40%;
 }
+
+.board {
+    display: flex;
+    flex-direction: row;
+    width: 60%;
+}
