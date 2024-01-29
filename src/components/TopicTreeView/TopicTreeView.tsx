@@ -1,4 +1,4 @@
-import { ApiError, ConnectionService, Topic, TopicsService, User } from '@/clients/api';
+import { Topic, TopicsService, User } from '@/clients/api';
 import { CSSProperties, useEffect, useRef, useState } from 'react';
 import { NodeApi, Tree, TreeApi } from 'react-arborist';
 import { AiTwotonePlusSquare } from "react-icons/ai";
@@ -48,11 +48,6 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
     const updateTopicsTree = () => {
         TopicsService.listTopicsApiV1TopicsGet()
         .then(response => setTopicsTree(response.topics))
-        .catch((err: ApiError) => {
-            if (err.status === 401) {
-                ConnectionService.logoutApiV1LogoutPost().then(_ => dispatch(logout()))
-            }
-        })
     }
 
     const onMove = ({ dragIds, parentId, index }: { dragIds: string[], parentId: string | null, index: number}) => {
@@ -70,17 +65,12 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
             }
         }).then(() => {
             updateTopicsTree()
-        }).catch((err: ApiError) => {
-            if (err.status === 401) {
-                ConnectionService.logoutApiV1LogoutPost().then(_ => dispatch(logout()))
-            }
         })
     }
 
     const onSelect = (topic: Topic | null) => {
         if (topic) {
             const node = getNodeById(topic.id)
-            console.log(node)
             node?.open()
             selectTopic(topic)
         }
@@ -128,10 +118,6 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
         ).then((response) => {
             updateTopicsTree()
             setCreatedTopicId(response.id)
-        }).catch((err: ApiError) => {
-            if (err.status === 401) {
-                ConnectionService.logoutApiV1LogoutPost().then(_ => dispatch(logout()))
-            }
         })
     }
 
@@ -173,10 +159,6 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
                                 }).then(() => {
                                     updateTopicsTree()
                                     node.reset()
-                                }).catch((err: ApiError) => {
-                                    if (err.status === 401) {
-                                        ConnectionService.logoutApiV1LogoutPost().then(_ => dispatch(logout()))
-                                    }
                                 })
                             }
                         }}

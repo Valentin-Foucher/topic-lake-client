@@ -1,0 +1,26 @@
+.items-list {
+    margin-bottom: 20px;
+}
+
+.add-item {
+    display: flex;
+    flex-direction: column;
+    max-width: 50%;
+    align-items: center;
+}
+
+.centered-add-item {
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    word-break: break-word;
+}
+
+.add-item-input {
+    display: flex;
+}
+
+.add-item-button {
+    display: flex;
+    margin-top: 10px;
+}

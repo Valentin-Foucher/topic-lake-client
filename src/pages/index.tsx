@@ -1,17 +1,21 @@
 import Login from '@/components/Login/Login';
-import { useAppSelector } from '../app/hooks'
+import { useAppDispatch, useAppSelector } from '../app/hooks'
 import CreateUser from '@/components/CreateUser';
 import Logout from '@/components/Logout/Logout';
 import TopicTreeView from '@/components/TopicTreeView/TopicTreeView';
-import { OpenAPI, Topic, User, UsersService } from '@/clients/api';
+import { ApiError, ConnectionService, OpenAPI, Topic, User, UsersService } from '@/clients/api';
 import './index.css'
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Board from '@/components/Board/Board';
+import { bearerTokenSlice } from '@/app/store';
 
+
+const { logout } = bearerTokenSlice.actions;
 
 export default function Home() {
     const [user, setUser] = useState<User>();
     const [selectedTopic, setSelectedTopic] = useState<Topic>()
+    const dispatch = useAppDispatch();
 
     const token = useAppSelector(state => state.bearerToken.value?.token)
 
@@ -20,6 +24,11 @@ export default function Home() {
             UsersService
             .getUserApiV1UsersSelfGet()
             .then(response => setUser(response.user))
+            .catch((err: ApiError) => {
+                if (err.status === 401) {
+                    ConnectionService.logoutApiV1LogoutPost().then(_ => dispatch(logout()))
+                }
+            })
         }
     }, [token])
 

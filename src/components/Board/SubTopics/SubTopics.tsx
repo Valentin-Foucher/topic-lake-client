@@ -7,7 +7,7 @@ export default function SubTopics({ topic, selectTopic }: { topic: Topic, select
     return (
         <>
             <div className="board-header">
-                Subtopics
+                Sub Topics
             </div>
             <div className="board-content sub-topics-list">
                 {subTopics.map((topic, i) =>
@@ -16,7 +16,7 @@ export default function SubTopics({ topic, selectTopic }: { topic: Topic, select
                         key={i}
                         onClick={() => selectTopic(topic)}
                     >
-                        Helo {topic.content}
+                        {topic.content}
                     </button>)
                 }
             </div>
