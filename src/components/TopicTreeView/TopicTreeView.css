@@ -5,6 +5,7 @@
     width: 100%;
     background-color: var(--main-bg-color);
     transition: background-color 0.3s ease;
+    cursor: pointer;
 }
 
 .node-container.is-selected {

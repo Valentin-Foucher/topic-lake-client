@@ -1,7 +1,3 @@
-.items-list {
-    margin-bottom: 20px;
-}
-
 .add-item {
     display: flex;
     flex-direction: column;

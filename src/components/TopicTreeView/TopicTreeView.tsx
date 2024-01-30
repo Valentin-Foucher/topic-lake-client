@@ -4,20 +4,15 @@ import { NodeApi, Tree, TreeApi } from 'react-arborist';
 import { AiTwotonePlusSquare } from "react-icons/ai";
 import { MdArrowDropDown, MdArrowRight, MdEdit } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
-import { useAppDispatch } from '@/app/hooks';
-import { bearerTokenSlice } from '@/app/store';
 import { title } from '@/app/strings';
 import './TopicTreeView.css'
 
 const DEFAULT_TOPIC_NAME = 'new topic'
 
-const { logout } = bearerTokenSlice.actions;
-
 export default function TopicTreeView({ user, selectedTopic, selectTopic }: { user: User | undefined, selectedTopic: Topic | undefined, selectTopic: (node: Topic) => void }) {
     const [topicsTree, setTopicsTree] = useState<Topic[]>();
     const [createdTopicId, setCreatedTopicId] = useState<number | null>()
     const [error, setError] = useState<string | null>()
-    const dispatch = useAppDispatch();
     const treeRef = useRef<TreeApi<Topic>>(null);
 
     useEffect(() => {
@@ -35,14 +30,16 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
             return
         }
         const newNode = getNodeById(createdTopicId)
-        if (newNode) {
             newNode.edit()
             setCreatedTopicId(null)
-        }
     }, [topicsTree, createdTopicId]);
 
-    const getNodeById = (id: number): NodeApi<Topic> | null | undefined => {
-        return treeRef.current?.at(treeRef.current?.idToIndex[id])
+    const getNodeById = (id: number): NodeApi<Topic> => {
+        const result = treeRef.current?.at(treeRef.current?.idToIndex[id])
+        if (!result) {
+            throw new Error('Node should exist')
+        }
+        return result
     }
 
     const updateTopicsTree = () => {
@@ -54,9 +51,7 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
         const id = parseInt(dragIds[0])
         const node = getNodeById(id)
         const parsedParentId = parentId ? parseInt(parentId) : null
-        if (!node) {
-            return
-        }
+
         TopicsService.updateTopicApiV1TopicsTopicIdPut({
             topicId: id,
             requestBody: {
@@ -70,8 +65,7 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
 
     const onSelect = (topic: Topic | null) => {
         if (topic) {
-            const node = getNodeById(topic.id)
-            node?.open()
+            getNodeById(topic.id).open()
             selectTopic(topic)
         }
     }
@@ -122,52 +116,70 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
     }
 
     function Node({ node, style, dragHandle }: { node: NodeApi<Topic>, style: CSSProperties, dragHandle?: (el: HTMLDivElement | null) => void }) {
+        const toggleButton = useRef<HTMLElement>(null);
+
+        const hasAncestor = (node: HTMLElement| null | undefined, ancestor: HTMLElement | null): boolean => {
+            let res = false
+            while (node){
+                if (node == ancestor) {
+                    res = true
+                    break
+                }
+                node = node?.parentElement
+            }
+            return res
+        }
+
         return (
             <div
                 style={style}
                 ref={dragHandle}
                 className={`node-container ${node.state.isSelected ? "is-selected" : ""}`}
+                onClick={(e) => e.target instanceof HTMLElement && !hasAncestor(e.target, toggleButton.current) && onSelect(node.data)}
             >
                 <span
-                    onClick={() => node.isInternal && node.toggle()}
+                    ref={toggleButton}
+                    onClick={() => node.toggle()}
                 >
                     {node.isOpen ? <MdArrowDropDown /> : <MdArrowRight />}
                 </span>
-                {node.isEditing ? (
-                    <input
-                        type="text"
-                        autoFocus
-                        minLength={4}
-                        maxLength={256}
-                        onFocus={(e) => e.currentTarget.select()}
-                        onBlur={() => node.reset()}
-                        onKeyDown={(e) => {
-                            if (e.key === "Escape") {
-                                node.reset()
-                            }
-                            else if (e.key === "Enter") {
-                                if (e.currentTarget.value.length < 4 || e.currentTarget.value.length > 256) {
+                <div className='topic'>
+                    {node.isEditing ? (
+                        <input
+                            type="text"
+                            autoFocus
+                            minLength={4}
+                            maxLength={256}
+                            onFocus={(e) => e.currentTarget.select()}
+                            onBlur={() => node.reset()}
+                            onKeyDown={(e) => {
+                                if (e.key === "Escape") {
                                     node.reset()
-                                    return
                                 }
-                                TopicsService.updateTopicApiV1TopicsTopicIdPut({
-                                    topicId: node.data.id,
-                                    requestBody: {
-                                        content: e.currentTarget.value,
-                                        parent_topic_id: node.data.parent_topic_id ?? null
+                                else if (e.key === "Enter") {
+                                    if (e.currentTarget.value.length < 4 || e.currentTarget.value.length > 256) {
+                                        node.reset()
+                                        return
                                     }
-                                }).then(() => {
-                                    updateTopicsTree()
-                                    node.reset()
-                                })
-                            }
-                        }}
-                    />
-                ) : (
-                    <pre onClick={() => onSelect(node.data)}>
-                        {title(node.data.content)}
-                    </pre>
-                )}
+                                    TopicsService.updateTopicApiV1TopicsTopicIdPut({
+                                        topicId: node.data.id,
+                                        requestBody: {
+                                            content: e.currentTarget.value,
+                                            parent_topic_id: node.data.parent_topic_id ?? null
+                                        }
+                                    }).then(() => {
+                                        updateTopicsTree()
+                                        node.reset()
+                                    })
+                                }
+                            }}
+                        />
+                    ) : (
+                        <pre>
+                            {title(node.data.content)}
+                        </pre>
+                    )}
+                </div>
                 {(node.data.user_id === user?.id || user?.admin) &&
                 <div className="actions">
                     <button onClick={() => node.edit()} title="Rename...">

@@ -23,9 +23,7 @@ export default function Ranking({ topic }: { topic: Topic }) {
                 Ranking
             </div>
             <div className="board-content ranking">
-                <div className="items-list">
-                    {items && <ItemsList items={items}/>}
-                </div>
+                {items && <ItemsList items={items} setItems={setItems} />}
                 <div className="add-item">
                     <div className="centered-add-item">
                         <input
