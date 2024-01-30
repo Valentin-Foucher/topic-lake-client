@@ -30,16 +30,14 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
             return
         }
         const newNode = getNodeById(createdTopicId)
+        if (newNode) {
             newNode.edit()
             setCreatedTopicId(null)
+        }
     }, [topicsTree, createdTopicId]);
 
-    const getNodeById = (id: number): NodeApi<Topic> => {
-        const result = treeRef.current?.at(treeRef.current?.idToIndex[id])
-        if (!result) {
-            throw new Error('Node should exist')
-        }
-        return result
+    const getNodeById = (id: number): NodeApi<Topic> | null | undefined => {
+        return treeRef.current?.at(treeRef.current?.idToIndex[id])
     }
 
     const updateTopicsTree = () => {
@@ -52,6 +50,9 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
         const node = getNodeById(id)
         const parsedParentId = parentId ? parseInt(parentId) : null
 
+        if (!node) {
+            return
+        }
         TopicsService.updateTopicApiV1TopicsTopicIdPut({
             topicId: id,
             requestBody: {
@@ -65,7 +66,7 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
 
     const onSelect = (topic: Topic | null) => {
         if (topic) {
-            getNodeById(topic.id).open()
+            getNodeById(topic.id)?.open()
             selectTopic(topic)
         }
     }

@@ -4,10 +4,11 @@ import './ItemsList.css'
 import { CSSProperties } from "react";
 
 
-export default function ItemsList({ items, setItems }: { items: Item[], setItems: (items: Item[]) => void }) {
+export default function ItemsList({ items, setItems, setReordering }: { items: Item[], setItems: (items: Item[]) => void, setReordering: (reordering: boolean) => void }) {
     const onDragEnd = ({ source, destination }: { source: { index: number, droppableId: string }, destination: { index: number, droppableId: string } }) => {
         if (!destination) return;
         setItems(reorderItems(items, source.index, destination.index));
+        setReordering(true)
     }
 
     const reorderItems = (items: Item[], startIndex: number, endIndex: number) => {
@@ -18,6 +19,7 @@ export default function ItemsList({ items, setItems }: { items: Item[], setItems
       };
 
     return (
+        // @ts-ignore
         <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="droppable">
                 {(provided) => (
