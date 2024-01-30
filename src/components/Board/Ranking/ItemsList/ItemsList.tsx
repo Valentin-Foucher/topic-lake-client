@@ -1,7 +1,7 @@
 import { Item } from "@/clients/api";
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import './ItemsList.css'
-
+import { CSSProperties } from "react";
 
 
 export default function ItemsList({ items, setItems }: { items: Item[], setItems: (items: Item[]) => void }) {
@@ -28,7 +28,12 @@ export default function ItemsList({ items, setItems }: { items: Item[], setItems
                                 index={i}
                                 draggableId={item.id.toString()}
                             >
-                                {(provided, snapshot) => (
+                                {(provided, snapshot) => {
+                                    const style: CSSProperties = {}
+                                    if (snapshot.isDragging) {
+                                        style['backgroundColor'] = 'var(--secondary-bg-color)'
+                                    }
+                                    return (
                                     <div
                                         className="item"
                                         key={i}
@@ -36,16 +41,13 @@ export default function ItemsList({ items, setItems }: { items: Item[], setItems
                                         {...provided.draggableProps}
                                         {...provided.dragHandleProps}
                                         style={{
-                                            padding: '8px 16px',
                                             ...provided.draggableProps.style,
-                                            background: snapshot.isDragging
-                                              ? 'pink'
-                                              : 'transparent',
+                                            ...style
                                           }}
                                     >
                                         {item.rank}. {item.content}
                                     </div>
-                                )}
+                                )}}
                             </Draggable>)
                         }
                     </div>
