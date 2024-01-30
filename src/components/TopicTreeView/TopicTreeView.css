@@ -3,7 +3,7 @@
     height: 100%;
     align-items: center;
     width: 100%;
-    background-color: var(--main-bg-color);
+    background-color: var(--fourth-bg-color);
     transition: background-color 0.3s ease;
     cursor: pointer;
 }
@@ -43,12 +43,8 @@
     visibility: visible;
 }
 
-.create-topic {
-    margin-bottom: 20px;
-}
-.create-topic button {
-    width: auto;
-}
-.create-topic button:hover {
-    transform: scale(1.1);
+
+
+.add-topic-button {
+    margin-left: 20px;
 }

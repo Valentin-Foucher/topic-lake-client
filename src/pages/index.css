@@ -5,13 +5,17 @@
 
 .left-menu {
     display: flex;
+    padding: 5px;
     flex-direction: column;
     gap: 20px;
-    width: 40%;
+    width: fit-content;
+    background-color: var(--fourth-bg-color);
+    border-radius: 5pt;
+    border: 0.25px solid var(--grey);
 }
 
 .board {
     display: flex;
     flex-direction: row;
-    width: 60%;
+    width: fill-available;
 }

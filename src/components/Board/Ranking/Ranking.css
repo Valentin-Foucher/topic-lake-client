@@ -8,6 +8,7 @@
 .centered-add-item {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     max-width: 100%;
     word-break: break-word;
 }

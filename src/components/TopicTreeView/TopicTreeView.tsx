@@ -198,11 +198,6 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
 
     return (
         <div>
-            <div className="actions create-topic">
-                <button onClick={createTopic} title="New Topic...">
-                    <AiTwotonePlusSquare size={25} />
-                </button>
-            </div>
             <Tree
                 data={topicsTree}
                 ref={treeRef}
@@ -220,6 +215,15 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
             </Tree>
             <div className="error">
                 {error}
+            </div>
+            <div className='add-button-wrapper'>
+                <button
+                        className="action-button add-topic-button"
+                        onClick={createTopic}
+                        title="New Topic..."
+                    >
+                        Add (4-256 characters)
+                </button>
             </div>
         </div>
     );

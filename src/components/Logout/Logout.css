@@ -1,6 +1,6 @@
 .log-out {
     display: flex;
     align-items: center;
-    justify-content: center;
+    margin-left: 10px;
     max-width: 300px;
 }

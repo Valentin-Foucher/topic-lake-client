@@ -2,7 +2,9 @@
     --main-bg-color:  rgb(30, 30, 30);
     --secondary-bg-color: rgb(37, 37, 37);
     --third-bg-color: rgb(48, 48, 48);
+    --fourth-bg-color: rgb(35, 35, 35);
     --main-text-color: rgb(245, 245, 245);
+    --grey: rgba(245, 245, 245, 0.2)
 }
 
 body {
