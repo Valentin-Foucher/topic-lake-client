@@ -27,9 +27,9 @@ export default function Logout() {
                     Sign out
                 </button>
             </div>
-            <div className="error">
+            <pre className="error">
                 {error}
-            </div>
+            </pre>
         </>
     );
 }

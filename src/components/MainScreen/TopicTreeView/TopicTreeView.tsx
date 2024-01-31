@@ -242,9 +242,9 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
             >
                 {Node}
             </Tree>
-            <div className="error">
+            <pre className="error">
                 {error}
-            </div>
+            </pre>
             <div className='add-topic-wrapper'>
                 <button
                         className="action-button"

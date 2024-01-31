@@ -31,9 +31,9 @@ export default function UserPassword({ onClick, buttonText, error }: { onClick: 
             >
                 {buttonText}
             </button>
-            <div className="error">
+            <pre className="error">
                 {error}
-            </div>
+            </pre>
         </>
     );
 }
