@@ -1,20 +1,16 @@
-import Login from '@/components/Login/Login';
 import { useAppDispatch, useAppSelector } from '../app/hooks'
-import CreateUser from '@/components/CreateUser/CreateUser';
-import Logout from '@/components/Logout/Logout';
-import TopicTreeView from '@/components/TopicTreeView/TopicTreeView';
-import { ApiError, ConnectionService, OpenAPI, Topic, User, UsersService } from '@/clients/api';
-import './index.css'
+import { ApiError, ConnectionService, OpenAPI, User, UsersService } from '@/clients/api';
 import { useEffect, useState } from 'react';
-import Board from '@/components/Board/Board';
 import { bearerTokenSlice } from '@/app/store';
+import ConnectionScreen from '@/components/ConnectionScreen/ConnectionScreen';
+import MainScreen from '@/components/MainScreen/MainScreen';
+import './index.css'
 
 
 const { logout } = bearerTokenSlice.actions;
 
 export default function Home() {
     const [user, setUser] = useState<User>();
-    const [selectedTopic, setSelectedTopic] = useState<Topic>()
     const dispatch = useAppDispatch();
 
     const token = useAppSelector(state => state.bearerToken.value?.token)
@@ -40,34 +36,8 @@ export default function Home() {
     }
 
     if (!token) {
-        return (
-            <div className='left-menu'>
-                <CreateUser />
-                <Login />
-            </div>
-        );
+        return <ConnectionScreen />
     }
 
-    return (
-        <div className='container'>
-            <div className='separator' />
-            <div className='left-menu'>
-                <TopicTreeView
-                    user={user}
-                    selectedTopic={selectedTopic}
-                    selectTopic={setSelectedTopic}
-                />
-                <Logout />
-            </div>
-            <div className='separator' />
-            <div className='separator' />
-            <div className='board'>
-                <Board
-                    topic={selectedTopic}
-                    selectTopic={setSelectedTopic}
-                />
-            </div>
-            <div className='separator' />
-        </div>
-    );
+    return <MainScreen user={user} />
 }

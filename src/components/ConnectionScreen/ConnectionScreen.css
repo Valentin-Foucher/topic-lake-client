@@ -1,0 +1,11 @@
+.connection-menu {
+    display: flex;
+    flex-direction: column;
+    width: min-content;
+    margin: 50px;
+    gap: 20px;
+    padding: 15px;
+    border-radius: 5px;
+    border: 0.25px solid var(--grey);
+}
+

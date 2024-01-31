@@ -2,30 +2,3 @@
     display: flex;
     flex-direction: row;
 }
-
-.left-menu {
-    display: flex;
-    flex-direction: column;
-    width: min-content;
-    gap: 20px;
-    padding: 5px;
-    background-color: var(--fourth-bg-color);
-    border-radius: 5px;
-    border: 0.25px solid var(--grey);
-}
-
-.left-menu > div {
-    display: flex;
-    flex-direction: column;
-    gap: 10px
-}
-
-.separator {
-    width: 30px;
-}
-
-.board {
-    display: flex;
-    flex-direction: row;
-    width: fill-available;
-}
