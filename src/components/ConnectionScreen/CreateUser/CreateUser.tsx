@@ -12,7 +12,7 @@ export default function CreateUser() {
     const dispatch = useAppDispatch();
 
     return (
-        <>
+        <div onClick={() => setError('')}>
             Create your account
             <UserPassword
                 onClick={(username: string, password: string) => {
@@ -27,6 +27,6 @@ export default function CreateUser() {
                 buttonText='Sign up and log in'
                 error={error}
             />
-        </>
+        </div>
     );
 }

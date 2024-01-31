@@ -39,6 +39,7 @@ input[type=text], input[type=password] {
 
 .error {
     margin-left: 5px;
+    white-space: pre-wrap;
     color: var(--error-color);
     font-size: 9pt;
 }

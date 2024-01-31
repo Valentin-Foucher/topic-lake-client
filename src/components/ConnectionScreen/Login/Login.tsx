@@ -12,7 +12,7 @@ export default function Login() {
     const dispatch = useAppDispatch();
 
     return (
-        <>
+        <div>
             Sign in
             <UserPassword
                 onClick={(username: string, password: string) => {
@@ -26,6 +26,6 @@ export default function Login() {
                 buttonText='Sign in'
                 error={error}
             />
-        </>
+        </div>
     );
 }
