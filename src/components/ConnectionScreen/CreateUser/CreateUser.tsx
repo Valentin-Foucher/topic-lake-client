@@ -15,6 +15,7 @@ export default function CreateUser() {
         <div onClick={() => setError('')}>
             Create your account
             <UserPassword
+                creatingAccount={true}
                 onClick={(username: string, password: string) => {
                     UsersService.createUserApiV1UsersPost({ requestBody: { username, password }})
                         .then(_ => {

@@ -15,6 +15,7 @@ export default function Login() {
         <div>
             Sign in
             <UserPassword
+                creatingAccount={false}
                 onClick={(username: string, password: string) => {
                     ConnectionService.loginApiV1LoginPost({ requestBody: { username, password }})
                         .then(response => {

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import './UserPassword.css'
 
-export default function UserPassword({ onClick, buttonText, error }: { onClick: (username: string, password: string) => void, buttonText: string, error: string | undefined}) {
+export default function UserPassword({ creatingAccount, onClick, buttonText, error }: { creatingAccount: boolean, onClick: (username: string, password: string) => void, buttonText: string, error: string | undefined}) {
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
@@ -19,6 +19,7 @@ export default function UserPassword({ onClick, buttonText, error }: { onClick: 
                 <input
                     name='password'
                     type='password'
+                    {...(creatingAccount ? {autoComplete: "new-password"} : {})}
                     placeholder='password'
                     value={password}
                     maxLength={64}

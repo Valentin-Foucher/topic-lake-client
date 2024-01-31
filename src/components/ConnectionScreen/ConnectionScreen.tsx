@@ -6,8 +6,8 @@ export default function ConnectionScreen() {
     return (
         <div className='container'>
             <div className='connection-menu'>
-                <CreateUser />
                 <Login />
+                <CreateUser />
             </div>
         </div>
     )
