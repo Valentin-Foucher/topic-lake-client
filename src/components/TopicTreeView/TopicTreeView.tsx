@@ -102,7 +102,6 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
 
     const onSelect = (topic: Topic | null) => {
         if (topic) {
-            console.log(topic)
             getNodeById(topic.id)?.open()
             selectTopic(topic)
         }
@@ -195,7 +194,7 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
                                     }
                                     updateTopic(
                                         node.data.id,
-                                        e.currentTarget.value,
+                                        e.currentTarget.value.trim(),
                                         node.data.parent_topic_id ?? null
                                     ).then(() => node.reset())
                                 }
