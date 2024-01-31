@@ -55,7 +55,7 @@ export default function Ranking({ topic }: { topic: Topic }) {
                                     setNewItemContent('')
                                     refreshItemsList()
                                 })}>
-                            Add (4-256 characters)
+                            Add (3-256 characters)
                         </button>
                     </div>
                 </div>
