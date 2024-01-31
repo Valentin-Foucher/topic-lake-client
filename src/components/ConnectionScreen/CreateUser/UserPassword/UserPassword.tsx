@@ -1,4 +1,5 @@
 import { useState } from "react";
+import './UserPassword.css'
 
 export default function UserPassword({ onClick, buttonText, error }: { onClick: (username: string, password: string) => void, buttonText: string, error: string | undefined}) {
     const [username, setUsername] = useState<string>("");
@@ -6,7 +7,7 @@ export default function UserPassword({ onClick, buttonText, error }: { onClick: 
 
     return (
         <>
-            <div>
+            <div className="username-password-form">
                 <input
                     name='username'
                     type='text'
