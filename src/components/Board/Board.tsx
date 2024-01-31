@@ -8,12 +8,12 @@ export default function Board({ topic, selectTopic }: { topic: Topic | undefined
         <>
             {topic &&
                 <>
-                        <div className="board-section">
+                        <div className="left board-section">
                             <Ranking
                                 topic={topic}
                             />
                         </div>
-                        <div className="board-section">
+                        <div className="right board-section">
                             <SubTopics
                                 topic={topic}
                                 selectTopic={selectTopic}

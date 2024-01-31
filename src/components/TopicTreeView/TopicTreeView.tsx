@@ -71,22 +71,26 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
     }
 
     const createTopic = (content: string, parentTopicId: number | null) => {
-        TopicsService.createTopicApiV1TopicsPost(
-            {
-                requestBody: {
-                    content,
-                    parent_topic_id: parentTopicId
+        apiCallWrapper(
+            TopicsService.createTopicApiV1TopicsPost(
+                {
+                    requestBody: {
+                        content,
+                        parent_topic_id: parentTopicId
+                    }
                 }
-            }
-        ).then((response) => {
-            updateTopicsTree()
-            setCreatedTopicId(response.id)
-        })
+            ).then((response) => {
+                updateTopicsTree()
+                setCreatedTopicId(response.id)
+            })
+        )
     }
 
     const deleteTopic = (topicId: number) => {
-        TopicsService.deleteTopicApiV1TopicsTopicIdDelete({ topicId })
-        .then(() => updateTopicsTree())
+        apiCallWrapper(
+            TopicsService.deleteTopicApiV1TopicsTopicIdDelete({ topicId })
+            .then(() => updateTopicsTree())
+        )
     }
 
     const onMove = ({ dragIds, parentId, index }: { dragIds: string[], parentId: string | null, index: number}) => {
@@ -214,7 +218,6 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
                     <button onClick={() => deleteTopic(node.data.id)} title="Delete">
                         <RxCross2 />
                     </button>
-
                 </div>
                 }
             </div>

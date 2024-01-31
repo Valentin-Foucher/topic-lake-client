@@ -26,7 +26,7 @@ export default function Ranking({ topic }: { topic: Topic }) {
 
     return (
         <>
-            <div className="board-header">
+            <div className="left board-header">
                 Ranking
             </div>
             <div className="board-content ranking">

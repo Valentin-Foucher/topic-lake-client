@@ -50,6 +50,7 @@ export default function Home() {
 
     return (
         <div className='container'>
+            <div className='separator' />
             <div className='left-menu'>
                 <TopicTreeView
                     user={user}
@@ -58,12 +59,15 @@ export default function Home() {
                 />
                 <Logout />
             </div>
+            <div className='separator' />
+            <div className='separator' />
             <div className='board'>
                 <Board
                     topic={selectedTopic}
                     selectTopic={setSelectedTopic}
                 />
             </div>
+            <div className='separator' />
         </div>
     );
 }

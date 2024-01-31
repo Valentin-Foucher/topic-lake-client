@@ -6,7 +6,7 @@ export default function SubTopics({ topic, selectTopic }: { topic: Topic, select
 
     return (
         <>
-            <div className="board-header">
+            <div className="right board-header">
                 Sub Topics
             </div>
             <div className="board-content sub-topics-list">

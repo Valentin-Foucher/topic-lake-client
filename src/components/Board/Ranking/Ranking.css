@@ -1,16 +1,14 @@
 .add-item {
     display: flex;
     flex-direction: column;
-    max-width: 50%;
-    align-items: center;
+    max-width: 100%;
 }
 
 .centered-add-item {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    max-width: 100%;
-    word-break: break-word;
+    align-items: center;
+    width: 100%;
 }
 
 .add-item-input {
@@ -19,5 +17,6 @@
 
 .add-item-button {
     display: flex;
+    max-width: 50%;
     margin-top: 10px;
 }
