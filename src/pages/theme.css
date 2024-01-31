@@ -1,10 +1,11 @@
 :root {
     --main-bg-color:  rgb(30, 30, 30);
+    --main-text-color: rgb(245, 245, 245);
+    --error-color: rgb(220, 0, 0);
     --secondary-bg-color: rgb(37, 37, 37);
     --third-bg-color: rgb(48, 48, 48);
     --fourth-bg-color: rgb(35, 35, 35);
-    --main-text-color: rgb(245, 245, 245);
-    --grey: rgba(245, 245, 245, 0.2)
+    --grey: rgba(245, 245, 245, 0.2);
 }
 
 body {
@@ -27,9 +28,15 @@ input[type=text], input[type=password] {
     color: #fff;
     background-color: rgba(255,255,255,0);
     text-align: center;
-    width: fit-content;
+    width:max-content;
     text-transform: none;
     border: 1px solid #fff;
     border-radius: 12px;
     padding: 8px 16px;
+}
+
+.error {
+    margin-left: 5px;
+    color: var(--error-color);
+    font-size: 9pt;
 }

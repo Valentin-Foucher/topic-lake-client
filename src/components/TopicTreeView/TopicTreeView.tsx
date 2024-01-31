@@ -1,10 +1,10 @@
-import { Topic, TopicsService, User } from '@/clients/api';
+import { ApiError, Topic, TopicsService, User } from '@/clients/api';
 import { CSSProperties, useEffect, useRef, useState } from 'react';
 import { NodeApi, Tree, TreeApi } from 'react-arborist';
-import { AiTwotonePlusSquare } from "react-icons/ai";
 import { MdArrowDropDown, MdArrowRight, MdEdit } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
 import { title } from '@/app/strings';
+import { parseApiError } from '@/app/errors';
 import './TopicTreeView.css'
 
 const DEFAULT_TOPIC_NAME = 'new topic'
@@ -40,9 +40,53 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
         return treeRef.current?.at(treeRef.current?.idToIndex[id])
     }
 
+    const apiCallWrapper = async (apiCall: Promise<void>): Promise<false | void> => {
+        setError(null)
+        try {
+            return await apiCall;
+        } catch (error) {
+            return error instanceof ApiError && setError(parseApiError(error));
+        }
+    }
+
     const updateTopicsTree = () => {
-        TopicsService.listTopicsApiV1TopicsGet()
-        .then(response => setTopicsTree(response.topics))
+        apiCallWrapper(
+            TopicsService.listTopicsApiV1TopicsGet()
+            .then(response => setTopicsTree(response.topics))
+        )
+    }
+
+    const updateTopic = (id: number, content: string, parentTopicId: number | null): Promise<false | void> => {
+        return apiCallWrapper(
+            TopicsService.updateTopicApiV1TopicsTopicIdPut({
+                topicId: id,
+                requestBody: {
+                    content,
+                    parent_topic_id: parentTopicId
+                }
+            }).then(() => {
+                updateTopicsTree()
+            })
+        )
+    }
+
+    const createTopic = (content: string, parentTopicId: number | null) => {
+        TopicsService.createTopicApiV1TopicsPost(
+            {
+                requestBody: {
+                    content,
+                    parent_topic_id: parentTopicId
+                }
+            }
+        ).then((response) => {
+            updateTopicsTree()
+            setCreatedTopicId(response.id)
+        })
+    }
+
+    const deleteTopic = (topicId: number) => {
+        TopicsService.deleteTopicApiV1TopicsTopicIdDelete({ topicId })
+        .then(() => updateTopicsTree())
     }
 
     const onMove = ({ dragIds, parentId, index }: { dragIds: string[], parentId: string | null, index: number}) => {
@@ -53,34 +97,22 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
         if (!node) {
             return
         }
-        TopicsService.updateTopicApiV1TopicsTopicIdPut({
-            topicId: id,
-            requestBody: {
-                content: node.data.content,
-                parent_topic_id: parsedParentId
-            }
-        }).then(() => {
-            updateTopicsTree()
-        })
+        updateTopic(id, node.data.content, parsedParentId)
     }
 
     const onSelect = (topic: Topic | null) => {
         if (topic) {
+            console.log(topic)
             getNodeById(topic.id)?.open()
             selectTopic(topic)
         }
     }
 
-    const createTopic = () => {
-        if (!treeRef.current) {
-            return
-        }
-
-        const parentTopicId = treeRef.current.selectedNodes[0] ? treeRef.current.selectedNodes[0].data.id : null
-        let futureName = DEFAULT_TOPIC_NAME
+    const getNewTopicName = (parentTopicId: number | null): string => {
+        let newTopicName = DEFAULT_TOPIC_NAME
         let automaticNameExtension = 0
 
-        const parentNode = parentTopicId ? getNodeById(parentTopicId) : treeRef.current.root
+        const parentNode = parentTopicId ? getNodeById(parentTopicId) : treeRef.current?.root
         parentNode?.openParents()
         parentNode?.open()
 
@@ -100,20 +132,19 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
         }
 
         if (automaticNameExtension > 0) {
-            futureName += ` (${automaticNameExtension})`
+            newTopicName += ` (${automaticNameExtension})`
         }
+        return newTopicName
+    }
 
-        TopicsService.createTopicApiV1TopicsPost(
-            {
-                requestBody: {
-                    content: futureName,
-                    parent_topic_id: parentTopicId
-                }
-            }
-        ).then((response) => {
-            updateTopicsTree()
-            setCreatedTopicId(response.id)
-        })
+    const createNewTopic = () => {
+        if (!treeRef.current) {
+            return
+        }
+        const parentTopicId = treeRef.current.selectedNodes[0] ? treeRef.current.selectedNodes[0].data.id : null
+        const newTopicName = getNewTopicName(parentTopicId)
+
+        createTopic(newTopicName, parentTopicId)
     }
 
     function Node({ node, style, dragHandle }: { node: NodeApi<Topic>, style: CSSProperties, dragHandle?: (el: HTMLDivElement | null) => void }) {
@@ -162,16 +193,11 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
                                         node.reset()
                                         return
                                     }
-                                    TopicsService.updateTopicApiV1TopicsTopicIdPut({
-                                        topicId: node.data.id,
-                                        requestBody: {
-                                            content: e.currentTarget.value,
-                                            parent_topic_id: node.data.parent_topic_id ?? null
-                                        }
-                                    }).then(() => {
-                                        updateTopicsTree()
-                                        node.reset()
-                                    })
+                                    updateTopic(
+                                        node.data.id,
+                                        e.currentTarget.value,
+                                        node.data.parent_topic_id ?? null
+                                    ).then(() => node.reset())
                                 }
                             }}
                         />
@@ -186,8 +212,7 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
                     <button onClick={() => node.edit()} title="Rename...">
                         <MdEdit />
                     </button>
-                    <button onClick={() => TopicsService.deleteTopicApiV1TopicsTopicIdDelete({ topicId: node.data.id })
-                                            .then(() => updateTopicsTree())} title="Delete">
+                    <button onClick={() => deleteTopic(node.data.id)} title="Delete">
                         <RxCross2 />
                     </button>
 
@@ -198,7 +223,7 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
     }
 
     return (
-        <div>
+        <div onClick={() => setError(null)}>
             <Tree
                 data={topicsTree}
                 ref={treeRef}
@@ -208,6 +233,7 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
                 rowHeight={20}
                 paddingBottom={50}
                 width={300}
+                height={500}
                 idAccessor={(t: Topic) => t.id.toString()}
                 childrenAccessor={(t: Topic) => t.sub_topics ?? []}
                 onMove={onMove}
@@ -217,10 +243,10 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
             <div className="error">
                 {error}
             </div>
-            <div className='add-button-wrapper'>
+            <div className='add-topic-wrapper'>
                 <button
-                        className="action-button add-topic-button"
-                        onClick={createTopic}
+                        className="action-button"
+                        onClick={createNewTopic}
                         title="New Topic..."
                     >
                         Add (4-256 characters)

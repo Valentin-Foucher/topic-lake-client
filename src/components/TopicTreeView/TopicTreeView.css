@@ -43,8 +43,16 @@
     visibility: visible;
 }
 
+.add-topic-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
+.add-topic-wrapper > button {
+    display: flex;
+}
 
-.add-topic-button {
-    margin-left: 20px;
+div[role=tree] > div > div {
+    height: 0px !important; /* overloading react-arborist inline style */
 }

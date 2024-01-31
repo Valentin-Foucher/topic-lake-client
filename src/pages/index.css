@@ -5,13 +5,19 @@
 
 .left-menu {
     display: flex;
-    padding: 5px;
     flex-direction: column;
+    width: min-content;
     gap: 20px;
-    width: fit-content;
+    padding: 5px;
     background-color: var(--fourth-bg-color);
     border-radius: 5pt;
     border: 0.25px solid var(--grey);
+}
+
+.left-menu > div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px
 }
 
 .board {
