@@ -207,9 +207,6 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
             >
                 {Node}
             </Tree>
-            <pre className="error">
-                {error}
-            </pre>
             <div className='add-topic-wrapper'>
                 <button
                         className="action-button"
@@ -219,6 +216,9 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
                         Add (3-256 characters)
                 </button>
             </div>
+            <pre className="error">
+                {error}
+            </pre>
         </div>
     );
 }

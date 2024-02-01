@@ -30,15 +30,18 @@ input[type=text], input[type=password] {
     text-transform: none;
     width: max-content;
     color: #fff;
-    background-color: rgba(255,255,255,0);
     border: 1px solid #fff;
     border-radius: 12px;
     padding: 8px 16px;
+    background-color: rgba(255,255,255,0);
 }
 
 .error {
-    margin-left: 5px;
+    user-select: none;
     white-space: pre-wrap;
     color: var(--error-color);
+    min-height: 40px;
+    width: 100%;
+    margin-left: 5px;
     font-size: 9pt;
 }
