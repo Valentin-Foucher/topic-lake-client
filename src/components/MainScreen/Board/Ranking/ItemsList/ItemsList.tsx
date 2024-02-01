@@ -1,14 +1,22 @@
-import { Item } from "@/clients/api";
+import { Item, ItemsService, UpdateItemRequest } from "@/clients/api";
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import './ItemsList.css'
 import { CSSProperties } from "react";
 
 
-export default function ItemsList({ items, setItems, setReordering }: { items: Item[], setItems: (items: Item[]) => void, setReordering: (reordering: boolean) => void }) {
+export default function ItemsList({ items, setItems, refreshItemsList }: { items: Item[], setItems: (items: Item[]) => void, refreshItemsList: () => void }) {
+    const updateItem = (item: Item, updateItemBody: UpdateItemRequest) => {
+        ItemsService.updateItemApiV1TopicsTopicIdItemsItemIdPut({ itemId: item.id, requestBody: updateItemBody })
+        .then(() => refreshItemsList())
+    }
+
     const onDragEnd = ({ source, destination }: { source: { index: number, droppableId: string }, destination: { index: number, droppableId: string } }) => {
-        if (!destination) return;
-        setItems(reorderItems(items, source.index, destination.index));
-        setReordering(true)
+        if (!destination) {
+            return
+        }
+        const movedItem = items[source.index]
+        setItems(reorderItems(items, source.index, destination.index))
+        updateItem(movedItem, { content: movedItem.content, rank: destination.index + 1 })
     }
 
     const reorderItems = (items: Item[], startIndex: number, endIndex: number) => {

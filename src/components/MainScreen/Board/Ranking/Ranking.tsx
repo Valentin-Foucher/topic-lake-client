@@ -5,19 +5,11 @@ import './Ranking.css'
 
 export default function Ranking({ topic }: { topic: Topic }) {
     const [items, setItems] = useState<Item[]>()
-    const [reordering, setReordering] = useState<boolean>()
     const [newItemContent, setNewItemContent] = useState<string>("")
 
     useEffect(() => {
         refreshItemsList()
     }, [topic])
-
-    useEffect(() => {
-        if (reordering) {
-            refreshItemsList()
-            setReordering(false)
-        }
-    }, [reordering])
 
     const refreshItemsList = () => {
         ItemsService.listItemsApiV1TopicsTopicIdItemsGet({ topicId: topic.id })
@@ -34,7 +26,7 @@ export default function Ranking({ topic }: { topic: Topic }) {
                 <ItemsList
                     items={items}
                     setItems={setItems}
-                    setReordering={setReordering}
+                    refreshItemsList={refreshItemsList}
                 />}
                 <div className="add-item">
                     <div className="centered-add-item">
