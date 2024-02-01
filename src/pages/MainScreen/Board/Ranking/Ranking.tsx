@@ -58,7 +58,7 @@ export default function Ranking({ topic }: { topic: Topic }) {
                         <button
                             className="action-button add-item-button"
                             onClick={() => createItem(topic.id, newItemContent)}>
-                            Add (3-256 characters)
+                            Add Item
                         </button>
 
                         <pre className="error">

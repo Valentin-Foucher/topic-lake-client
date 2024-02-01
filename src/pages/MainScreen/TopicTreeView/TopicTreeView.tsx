@@ -213,7 +213,7 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
                         onClick={createNewTopic}
                         title="New Topic..."
                     >
-                        Add (3-256 characters)
+                        Add Topic
                 </button>
             </div>
             <pre className="error">
