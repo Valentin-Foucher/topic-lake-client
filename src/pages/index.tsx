@@ -2,8 +2,8 @@ import { useAppDispatch, useAppSelector } from '../app/hooks'
 import { ApiError, ConnectionService, OpenAPI, User, UsersService } from '@/clients/api';
 import { useEffect, useState } from 'react';
 import { bearerTokenSlice } from '@/app/store';
-import ConnectionScreen from '@/components/ConnectionScreen/ConnectionScreen';
-import MainScreen from '@/components/MainScreen/MainScreen';
+import ConnectionScreen from '@/pages/ConnectionScreen/ConnectionScreen';
+import MainScreen from '@/pages/MainScreen/MainScreen';
 import './index.css'
 
 
