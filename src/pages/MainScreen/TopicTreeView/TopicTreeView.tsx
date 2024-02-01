@@ -1,19 +1,22 @@
-import { ApiError, Topic, TopicsService, User } from '@/clients/api';
+import { Topic, TopicsService, User } from '@/clients/api';
 import { CSSProperties, useEffect, useRef, useState } from 'react';
 import { NodeApi, Tree, TreeApi } from 'react-arborist';
-import { MdArrowDropDown, MdArrowRight, MdEdit } from "react-icons/md";
-import { RxCross2 } from "react-icons/rx";
+import { MdArrowDropDown, MdArrowRight } from "react-icons/md";
 import { title } from '@/app/strings';
-import { parseApiError } from '@/app/errors';
+import { baseApiCallWrapper } from '@/app/errors';
 import './TopicTreeView.css'
+import DeleteRename from '@/components/DeleteRename/DeleteRename';
+import EditableItem from '@/components/EditableItem/EditableItem';
+
 
 const DEFAULT_TOPIC_NAME = 'new topic'
 
 export default function TopicTreeView({ user, selectedTopic, selectTopic }: { user: User | undefined, selectedTopic: Topic | undefined, selectTopic: (node: Topic) => void }) {
     const [topicsTree, setTopicsTree] = useState<Topic[]>();
     const [createdTopicId, setCreatedTopicId] = useState<number | null>()
-    const [error, setError] = useState<string | null>()
+    const [error, setError] = useState<string>()
     const treeRef = useRef<TreeApi<Topic>>(null);
+    const apiCallWrapper = (apiCall: Promise<any>) => baseApiCallWrapper(setError, apiCall)
 
     useEffect(() => {
         updateTopicsTree()
@@ -38,15 +41,6 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
 
     const getNodeById = (id: number): NodeApi<Topic> | null | undefined => {
         return treeRef.current?.at(treeRef.current?.idToIndex[id])
-    }
-
-    const apiCallWrapper = async (apiCall: Promise<void>): Promise<false | void> => {
-        setError(null)
-        try {
-            return await apiCall;
-        } catch (error) {
-            return error instanceof ApiError && setError(parseApiError(error));
-        }
     }
 
     const updateTopicsTree = () => {
@@ -179,53 +173,24 @@ export default function TopicTreeView({ user, selectedTopic, selectTopic }: { us
                     {node.isOpen ? <MdArrowDropDown /> : <MdArrowRight />}
                 </span>
                 <div className='topic'>
-                    {node.isEditing ? (
-                        <input
-                            type="text"
-                            autoFocus
-                            minLength={4}
-                            maxLength={256}
-                            onFocus={(e) => e.currentTarget.select()}
-                            onBlur={() => node.reset()}
-                            onKeyDown={(e) => {
-                                if (e.key === "Escape") {
-                                    node.reset()
-                                }
-                                else if (e.key === "Enter") {
-                                    if (e.currentTarget.value.length < 4 || e.currentTarget.value.length > 256) {
-                                        node.reset()
-                                        return
-                                    }
-                                    updateTopic(
-                                        node.data.id,
-                                        e.currentTarget.value.trim(),
-                                        node.data.parent_topic_id ?? null
-                                    ).then(() => node.reset())
-                                }
-                            }}
-                        />
-                    ) : (
-                        <pre>
-                            {title(node.data.content)}
-                        </pre>
-                    )}
+                    <EditableItem
+                        isEditing={node.isEditing}
+                        reset={() => node.reset()}
+                        update={(value) => updateTopic(node.data.id, value, node.data.parent_topic_id ?? null)}
+                        content={node.data.content}
+                    />
                 </div>
                 {(node.data.user_id === user?.id || user?.admin) &&
-                <div className="actions">
-                    <button onClick={() => node.edit()} title="Rename...">
-                        <MdEdit />
-                    </button>
-                    <button onClick={() => deleteTopic(node.data.id)} title="Delete">
-                        <RxCross2 />
-                    </button>
-                </div>
-                }
+                <DeleteRename
+                    renameModel={() => node.edit()}
+                    deleteModel={() => deleteTopic(node.data.id)}
+                />}
             </div>
         );
     }
 
     return (
-        <div onClick={() => setError(null)}>
+        <div onClick={() => setError('')}>
             <Tree
                 data={topicsTree}
                 ref={treeRef}

@@ -1,13 +1,29 @@
 import { Item, ItemsService, UpdateItemRequest } from "@/clients/api";
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import { CSSProperties, useState } from "react";
+import DeleteRename from "@/components/DeleteRename/DeleteRename";
+import { baseApiCallWrapper } from "@/app/errors";
+import EditableItem from "@/components/EditableItem/EditableItem";
 import './ItemsList.css'
-import { CSSProperties } from "react";
 
 
-export default function ItemsList({ items, setItems, refreshItemsList }: { items: Item[], setItems: (items: Item[]) => void, refreshItemsList: () => void }) {
-    const updateItem = (item: Item, updateItemBody: UpdateItemRequest) => {
-        ItemsService.updateItemApiV1TopicsTopicIdItemsItemIdPut({ itemId: item.id, requestBody: updateItemBody })
-        .then(() => refreshItemsList())
+export default function ItemsList({ items, setItems, refreshItemsList, setError }: { items: Item[], setItems: (items: Item[]) => void, refreshItemsList: () => void, setError: (error: string) => void }) {
+    const [isEditing, setEditing] = useState<boolean>(false)
+
+    const apiCallWrapper = (apiCall: Promise<void>) => baseApiCallWrapper(setError, apiCall)
+
+    const updateItem = (item: Item, updateItemBody: UpdateItemRequest): Promise<void> => {
+        return apiCallWrapper(
+            ItemsService.updateItemApiV1TopicsTopicIdItemsItemIdPut({ itemId: item.id, requestBody: updateItemBody })
+            .then(() => refreshItemsList())
+        )
+    }
+
+    const deleteItem = (itemId: number) => {
+        apiCallWrapper(
+            ItemsService.deleteItemApiV1TopicsTopicIdItemsItemIdDelete({ itemId })
+            .then(() => refreshItemsList())
+        )
     }
 
     const onDragEnd = ({ source, destination }: { source: { index: number, droppableId: string }, destination: { index: number, droppableId: string } }) => {
@@ -44,19 +60,30 @@ export default function ItemsList({ items, setItems, refreshItemsList }: { items
                                         style['backgroundColor'] = 'var(--secondary-bg-color)'
                                     }
                                     return (
-                                    <div
-                                        className="item"
-                                        key={i}
-                                        ref={provided.innerRef}
-                                        {...provided.draggableProps}
-                                        {...provided.dragHandleProps}
-                                        style={{
-                                            ...provided.draggableProps.style,
-                                            ...style
-                                          }}
-                                    >
-                                        {item.rank}. {item.content}
-                                    </div>
+                                        <>
+                                        <div
+                                            className="item"
+                                            key={i}
+                                            ref={provided.innerRef}
+                                            {...provided.draggableProps}
+                                            {...provided.dragHandleProps}
+                                            style={{
+                                                ...provided.draggableProps.style,
+                                                ...style
+                                            }}
+                                        >
+                                            <EditableItem
+                                                isEditing={isEditing}
+                                                reset={() => setEditing(false)}
+                                                update={(value: string) => updateItem(item, {content: value, rank: item.rank }).then(() => setEditing(false))}
+                                                content={`${item.rank}. ${item.content}`}
+                                            />
+                                            <DeleteRename
+                                                renameModel={() => setEditing(true)}
+                                                deleteModel={() => deleteItem(item.id)}
+                                            />
+                                        </div>
+                                    </>
                                 )}}
                             </Draggable>)
                         }

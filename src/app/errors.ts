@@ -1,6 +1,6 @@
 import { ApiError } from "@/clients/api";
 
-export const parseApiError = (e: ApiError): string => {
+const parseApiError = (e: ApiError): string => {
     let result;
     const { detail } = e.body;
     if (detail instanceof Array) {
@@ -9,4 +9,13 @@ export const parseApiError = (e: ApiError): string => {
         result = detail;
     }
     return result;
+}
+
+export const baseApiCallWrapper = async (setError: (error: string) => void, apiCall: Promise<any>): Promise<any> => {
+    setError('')
+    try {
+        return await apiCall;
+    } catch (error) {
+        return error instanceof ApiError && setError(parseApiError(error));
+    }
 }

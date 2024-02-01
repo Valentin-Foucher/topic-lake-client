@@ -2,18 +2,33 @@ import { Item, ItemsService, Topic } from "@/clients/api";
 import { useEffect, useState } from "react";
 import ItemsList from "./ItemsList/ItemsList";
 import './Ranking.css'
+import { baseApiCallWrapper } from "@/app/errors";
 
 export default function Ranking({ topic }: { topic: Topic }) {
     const [items, setItems] = useState<Item[]>()
     const [newItemContent, setNewItemContent] = useState<string>("")
+    const [error, setError] = useState<string>('')
+    const apiCallWrapper = (apiCall: Promise<any>) => baseApiCallWrapper(setError, apiCall)
 
     useEffect(() => {
         refreshItemsList()
     }, [topic])
 
     const refreshItemsList = () => {
-        ItemsService.listItemsApiV1TopicsTopicIdItemsGet({ topicId: topic.id })
-        .then((response) => setItems(response.items))
+        apiCallWrapper(
+            ItemsService.listItemsApiV1TopicsTopicIdItemsGet({ topicId: topic.id })
+            .then((response) => setItems(response.items))
+        )
+    }
+
+    const createItem = (topicId: number, content: string) => {
+        apiCallWrapper(
+            ItemsService.createItemApiV1TopicsTopicIdItemsPost({ topicId, requestBody: { content, rank: 1_000_000 }})
+            .then(() => {
+                setNewItemContent('')
+                refreshItemsList()
+            })
+        )
     }
 
     return (
@@ -21,12 +36,13 @@ export default function Ranking({ topic }: { topic: Topic }) {
             <div className="left board-header">
                 Ranking
             </div>
-            <div className="board-content ranking">
+            <div className="board-content ranking" onClick={() => setError('')}>
                 {items &&
                 <ItemsList
                     items={items}
                     setItems={setItems}
                     refreshItemsList={refreshItemsList}
+                    setError={setError}
                 />}
                 <div className="add-item">
                     <div className="centered-add-item">
@@ -41,14 +57,13 @@ export default function Ranking({ topic }: { topic: Topic }) {
                         />
                         <button
                             className="action-button add-item-button"
-                            onClick={() => newItemContent.length >= 4 &&
-                                ItemsService.createItemApiV1TopicsTopicIdItemsPost({ topicId: topic.id, requestBody: { content: newItemContent, rank: 1_000_000 }})
-                                .then(() => {
-                                    setNewItemContent('')
-                                    refreshItemsList()
-                                })}>
+                            onClick={() => createItem(topic.id, newItemContent)}>
                             Add (3-256 characters)
                         </button>
+
+                        <pre className="error">
+                            {error}
+                        </pre>
                     </div>
                 </div>
             </div>

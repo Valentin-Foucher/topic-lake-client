@@ -1,0 +1,26 @@
+.actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.actions button {
+    display: flex;
+    align-items: center;
+    background-color: inherit;
+    border: none;
+    color: #999999;
+    font-size: 16px;
+    height: 100%;
+    width: 30px;
+}
+
+div > .actions {
+    visibility: hidden;
+}
+
+div:hover > .actions {
+    visibility: visible;
+}
